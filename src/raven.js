@@ -10,7 +10,6 @@ var _Raven = window.Raven,
     lastEventId,
     globalServer,
     globalUser,
-    globalKey,
     globalOptions = {
         api_host: 'https://opbeat.com',
         logger: 'javascript',
@@ -406,10 +405,7 @@ function each(obj, callback) {
 
 
 function setAuthQueryString() {
-    authQueryString =
-        '?sentry_version=4' +
-        '&sentry_client=raven-js/' + Raven.VERSION +
-        '&sentry_key=' + globalKey;
+    authQueryString = '?agent=opbeat-js/' + Raven.VERSION;
 }
 
 
@@ -636,8 +632,8 @@ function send(data) {
 
 
 function makeRequest(data) {
-    var img = new Image(),
-        src = globalServer + authQueryString + '&sentry_data=' + encodeURIComponent(JSON.stringify(data));
+    var img = new Image();
+    var src = globalServer + authQueryString + '&data=' + encodeURIComponent(JSON.stringify(data));
 
     img.onload = function success() {
         triggerEvent('success', {
