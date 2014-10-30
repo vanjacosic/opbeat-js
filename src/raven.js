@@ -12,6 +12,7 @@ var _Raven = window.Raven,
     globalUser,
     globalKey,
     globalOptions = {
+        api_host: 'https://opbeat.com',
         logger: 'javascript',
         ignoreErrors: [],
         ignoreUrls: [],
@@ -46,29 +47,23 @@ var Raven = {
     },
 
     /*
-     * Configure Raven with a DSN and extra options
+     * Configure Raven with Opbeat credentials and other options
      *
-     * @param {string} dsn The public Sentry DSN
-     * @param {object} options Optional set of of global options [optional]
+     * @param {object} options Optional set of of global options
      * @return {Raven}
      */
-    config: function(dsn, options) {
+    config: function(options) {
         if (globalServer) {
             logDebug('error', 'Error: Raven has already been configured');
             return Raven;
         }
-        if (!dsn) return Raven;
 
-        var uri = parseDSN(dsn),
-            lastSlash = uri.path.lastIndexOf('/'),
-            path = uri.path.substr(1, lastSlash);
+        if (!options) return Raven;
 
-        // merge in options
-        if (options) {
-            each(options, function(key, value){
-                globalOptions[key] = value;
-            });
-        }
+        // Merge in options
+        each(options, function(key, value){
+            globalOptions[key] = value;
+        });
 
         // "Script error." is hard coded into browsers for errors that it can't read.
         // this is the result of a script being pulled in from an external domain and CORS.
@@ -85,16 +80,12 @@ var Raven = {
         globalOptions.whitelistUrls = globalOptions.whitelistUrls.length ? joinRegExp(globalOptions.whitelistUrls) : false;
         globalOptions.includePaths = joinRegExp(globalOptions.includePaths);
 
-        globalKey = uri.user;
 
-        // assemble the endpoint from the uri pieces
-        globalServer = '//' + uri.host +
-                      (uri.port ? ':' + uri.port : '') +
-                      '/' + path + 'api/' + globalProject + '/store/';
-
-        if (uri.protocol) {
-            globalServer = uri.protocol + ':' + globalServer;
-        }
+        // Assemble the API endpoint
+        globalServer = globalOptions.api_host +
+                       '/api/v1/organizations/' + 
+                       globalOptions.orgId + '/apps/' + 
+                       globalOptions.appId + '/errors.gif';
 
         if (globalOptions.fetchContext) {
             TraceKit.remoteFetching = true;
@@ -358,9 +349,6 @@ function triggerEvent(eventType, options) {
     }
 }
 
-var dsnKeys = 'source protocol user pass host port path'.split(' '),
-    dsnPattern = /^(?:(\w+):)?\/\/(\w+)(:\w+)?@([\w\.-]+)(?::(\d+))?(\/.*)/;
-
 function RavenConfigError(message) {
     this.name = 'RavenConfigError';
     this.message = message;
@@ -369,23 +357,6 @@ RavenConfigError.prototype = new Error();
 RavenConfigError.prototype.constructor = RavenConfigError;
 
 /**** Private functions ****/
-function parseDSN(str) {
-    var m = dsnPattern.exec(str),
-        dsn = {},
-        i = 7;
-
-    try {
-        while (i--) dsn[dsnKeys[i]] = m[i] || '';
-    } catch(e) {
-        throw new RavenConfigError('Invalid DSN: ' + str);
-    }
-
-    if (dsn.pass)
-        throw new RavenConfigError('Do not specify your private key in the DSN!');
-
-    return dsn;
-}
-
 function isUndefined(what) {
     return typeof what === 'undefined';
 }
@@ -728,15 +699,6 @@ function logDebug(level, message) {
         console[level](message);
     }
 }
-
-function afterLoad() {
-    // Attempt to initialize Raven on load
-    var RavenConfig = window.RavenConfig;
-    if (RavenConfig) {
-        Raven.config(RavenConfig.dsn, RavenConfig.config).install();
-    }
-}
-afterLoad();
 
 // Expose Raven to the world
 window.Raven = Raven;
