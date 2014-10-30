@@ -18,7 +18,6 @@ var _Raven = window.Raven,
         whitelistUrls: [],
         includePaths: [],
         collectWindowErrors: true,
-        tags: {},
         extra: {}
     },
     authQueryString,
@@ -280,18 +279,6 @@ var Raven = {
      */
     setExtraContext: function(extra) {
        globalOptions.extra = extra || {};
-
-       return Raven;
-    },
-
-    /*
-     * Set tags to be sent along with the payload.
-     *
-     * @param {object} tags An object representing tags [optional]
-     * @return {Raven}
-     */
-    setTagsContext: function(tags) {
-       globalOptions.tags = tags || {};
 
        return Raven;
     },
@@ -598,12 +585,10 @@ function send(data) {
         request: getHttpData()
     }, data);
 
-    // Merge in the tags and extra separately since objectMerge doesn't handle a deep merge
-    data.tags = objectMerge(globalOptions.tags, data.tags);
+    // Merge in the extras separately since objectMerge doesn't handle a deep merge
     data.extra = objectMerge(globalOptions.extra, data.extra);
 
-    // If there are no tags/extra, strip the key from the payload alltogther.
-    if (isEmptyObject(data.tags)) delete data.tags;
+    // If there are no extras, strip the key from the payload alltogther.
     if (isEmptyObject(data.extra)) delete data.extra;
 
     if (globalUser) {
