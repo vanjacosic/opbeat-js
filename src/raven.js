@@ -29,7 +29,7 @@ var _Raven = window.Raven,
  * @this {Raven}
  */
 var Raven = {
-    VERSION: '1.1.16',
+    VERSION: '0.0.1',
 
     debug: true,
 
