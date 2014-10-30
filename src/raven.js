@@ -606,10 +606,10 @@ function send(data) {
         return;
     }
 
-    // Send along an event_id if not explicitly passed.
-    // This event_id can be used to reference the error within Sentry itself.
+    // Send along an client_supplied_id if not explicitly passed.
+    // This client_supplied_id can be used to reference the error in Opbeat
     // Set lastEventId after we know the error should actually be sent
-    lastEventId = data.event_id || (data.event_id = uuid4());
+    lastEventId = data.client_supplied_id || (data.client_supplied_id = uuid4());
 
     makeRequest(data);
 }
