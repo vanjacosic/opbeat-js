@@ -594,8 +594,6 @@ function send(data) {
 
     data = objectMerge({
         logger: globalOptions.logger,
-        site: globalOptions.site,
-        platform: 'javascript',
         // sentry.interfaces.Http
         request: getHttpData()
     }, data);
