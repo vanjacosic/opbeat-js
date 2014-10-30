@@ -28,16 +28,16 @@ gulp.task('refresh-browser', function() {
 // Files to bundle
 JS_DIST_FILES = [
     'libs/tracekit.js',
-    'src/raven.js'
+    'src/opbeat.js'
 ];
 
 // Bundles files into
 gulp.task('process-scripts', function() {
     gulp.src(JS_DIST_FILES)
-        .pipe(concat('raven.js'))
+        .pipe(concat('opbeat.js'))
         .pipe(gulp.dest('./dist'))
         .pipe(uglify().on('error', function(e) { console.log('\x07',e.message); return this.end(); }))
-        .pipe(concat('raven.min.js'))
+        .pipe(concat('opbeat.min.js'))
         .pipe(gulp.dest('./dist'))
         .pipe(refresh(server));
 });
