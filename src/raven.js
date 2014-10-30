@@ -534,12 +534,10 @@ function processException(type, message, fileurl, lineno, frames, options) {
     // Fire away!
     send(
         objectMerge({
-            // sentry.interfaces.Exception
             exception: {
                 type: type,
                 value: message
             },
-            // sentry.interfaces.Stacktrace
             stacktrace: stacktrace,
             culprit: fileurl,
             message: label
@@ -581,8 +579,7 @@ function send(data) {
 
     data = objectMerge({
         logger: globalOptions.logger,
-        // sentry.interfaces.Http
-        request: getHttpData()
+        http: getHttpData()
     }, data);
 
     // Merge in the extras separately since objectMerge doesn't handle a deep merge
@@ -592,7 +589,6 @@ function send(data) {
     if (isEmptyObject(data.extra)) delete data.extra;
 
     if (globalUser) {
-        // sentry.interfaces.User
         data.user = globalUser;
         data.user.is_authenticated = true; // Required by API
     }
