@@ -611,6 +611,7 @@ function send(data) {
     if (globalUser) {
         // sentry.interfaces.User
         data.user = globalUser;
+        data.user.is_authenticated = true; // Required by API
     }
 
     if (isFunction(globalOptions.dataCallback)) {
