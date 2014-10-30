@@ -1,14 +1,14 @@
 console.log('Example site loaded.');
 
 // Configure client
-Raven.config({
+Opbeat.config({
     api_host: 'http://0.0.0.0:9000',
     orgId: '21c3358438094c01acbb38554436497a',
     appId: '53d206094c'
 }).install();
 
 // Set user data
-Raven.setUserContext({
+Opbeat.setUserContext({
     email: 'vanja@cosic.dk',
     id: 1
 })
@@ -24,6 +24,6 @@ function divide(a, b) {
     try {
         return multiply(add(a, b), a, b) / c;
     } catch (e) {
-        Raven.captureException(e);
+        Opbeat.captureException(e);
     }
 }

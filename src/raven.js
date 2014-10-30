@@ -2,9 +2,9 @@
 'use strict';
 
 // First, check for JSON support
-// If there is no JSON, we no-op the core features of Raven
+// If there is no JSON, we no-op the core features of Opbeat
 // since JSON is required to encode the payload
-var _Raven = window.Raven,
+var _Opbeat = window.Opbeat,
     hasJSON = !!(window.JSON && window.JSON.stringify),
     lastCapturedException,
     lastEventId,
@@ -21,42 +21,42 @@ var _Raven = window.Raven,
         extra: {}
     },
     authQueryString,
-    isRavenInstalled = false;
+    isOpbeatInstalled = false;
 
 /*
- * The core Raven singleton
+ * The core Opbeat singleton
  *
- * @this {Raven}
+ * @this {Opbeat}
  */
-var Raven = {
+var Opbeat = {
     VERSION: '0.0.1',
 
     debug: true,
 
     /*
-     * Allow multiple versions of Raven to be installed.
-     * Strip Raven from the global context and returns the instance.
+     * Allow multiple versions of Opbeat to be installed.
+     * Strip Opbeat from the global context and returns the instance.
      *
-     * @return {Raven}
+     * @return {Opbeat}
      */
     noConflict: function() {
-        window.Raven = _Raven;
-        return Raven;
+        window.Opbeat = _Opbeat;
+        return Opbeat;
     },
 
     /*
-     * Configure Raven with Opbeat credentials and other options
+     * Configure Opbeat with Opbeat.com credentials and other options
      *
      * @param {object} options Optional set of of global options
-     * @return {Raven}
+     * @return {Opbeat}
      */
     config: function(options) {
         if (globalServer) {
-            logDebug('error', 'Error: Raven has already been configured');
-            return Raven;
+            logDebug('error', 'Error: Opbeat has already been configured');
+            return Opbeat;
         }
 
-        if (!options) return Raven;
+        if (!options) return Opbeat;
 
         // Merge in options
         each(options, function(key, value){
@@ -98,7 +98,7 @@ var Raven = {
         setAuthQueryString();
 
         // return for chaining
-        return Raven;
+        return Opbeat;
     },
 
     /*
@@ -107,19 +107,19 @@ var Raven = {
      * At this point, install() is required to be called due
      * to the way TraceKit is set up.
      *
-     * @return {Raven}
+     * @return {Opbeat}
      */
     install: function() {
-        if (isSetup() && !isRavenInstalled) {
+        if (isSetup() && !isOpbeatInstalled) {
             TraceKit.report.subscribe(handleStackInfo);
-            isRavenInstalled = true;
+            isOpbeatInstalled = true;
         }
 
-        return Raven;
+        return Opbeat;
     },
 
     /*
-     * Wrap code within a context so Raven can capture errors
+     * Wrap code within a context so Opbeat can capture errors
      * reliably across domains that is executed immediately.
      *
      * @param {object} options A specific set of options for this context [optional]
@@ -133,7 +133,7 @@ var Raven = {
             options = undefined;
         }
 
-        return Raven.wrap(options, func).apply(this, args);
+        return Opbeat.wrap(options, func).apply(this, args);
     },
 
     /*
@@ -163,7 +163,7 @@ var Raven = {
         }
 
         // We don't wanna wrap it twice!
-        if (func.__raven__) {
+        if (func.__opbeat__) {
             return func;
         }
 
@@ -173,13 +173,13 @@ var Raven = {
             // Recursively wrap all of a function's arguments that are
             // functions themselves.
 
-            while(i--) args[i] = deep ? Raven.wrap(options, arguments[i]) : arguments[i];
+            while(i--) args[i] = deep ? Opbeat.wrap(options, arguments[i]) : arguments[i];
 
             try {
                 /*jshint -W040*/
                 return func.apply(this, args);
             } catch(e) {
-                Raven.captureException(e, options);
+                Opbeat.captureException(e, options);
                 throw e;
             }
         }
@@ -193,7 +193,7 @@ var Raven = {
 
         // Signal that this function has been wrapped already
         // for both debugging and to prevent it to being wrapped twice
-        wrapped.__raven__ = true;
+        wrapped.__opbeat__ = true;
         wrapped.__inner__ = func;
 
         return wrapped;
@@ -202,25 +202,25 @@ var Raven = {
     /*
      * Uninstalls the global error handler.
      *
-     * @return {Raven}
+     * @return {Opbeat}
      */
     uninstall: function() {
         TraceKit.report.uninstall();
-        isRavenInstalled = false;
+        isOpbeatInstalled = false;
 
-        return Raven;
+        return Opbeat;
     },
 
     /*
-     * Manually capture an exception and send it over to Sentry
+     * Manually capture an exception and send it over to Opbeat.com
      *
      * @param {error} ex An exception to be logged
      * @param {object} options A specific set of options for this error [optional]
-     * @return {Raven}
+     * @return {Opbeat}
      */
     captureException: function(ex, options) {
         // If not an Error is passed through, recall as a message instead
-        if (!(ex instanceof Error)) return Raven.captureMessage(ex, options);
+        if (!(ex instanceof Error)) return Opbeat.captureMessage(ex, options);
 
         // Store the raw exception object for potential debugging and introspection
         lastCapturedException = ex;
@@ -238,15 +238,15 @@ var Raven = {
             }
         }
 
-        return Raven;
+        return Opbeat;
     },
 
     /*
-     * Manually send a message to Sentry
+     * Manually send a message to Opbeat.com
      *
-     * @param {string} msg A plain message to be captured in Sentry
+     * @param {string} msg A plain message to be captured in Opbeat.com
      * @param {object} options A specific set of options for this message [optional]
-     * @return {Raven}
+     * @return {Opbeat}
      */
     captureMessage: function(msg, options) {
         // Fire away!
@@ -256,35 +256,35 @@ var Raven = {
             }, options)
         );
 
-        return Raven;
+        return Opbeat;
     },
 
     /*
      * Set/clear a user to be sent along with the payload.
      *
      * @param {object} user An object representing user data [optional]
-     * @return {Raven}
+     * @return {Opbeat}
      */
     setUserContext: function(user) {
        globalUser = user;
 
-       return Raven;
+       return Opbeat;
     },
 
     /*
      * Set extra attributes to be sent along with the payload.
      *
      * @param {object} extra An object representing extra data [optional]
-     * @return {Raven}
+     * @return {Opbeat}
      */
     setExtraContext: function(extra) {
        globalOptions.extra = extra || {};
 
-       return Raven;
+       return Opbeat;
     },
 
     /*
-     * Get the latest raw exception that was captured by Raven.
+     * Get the latest raw exception that was captured by Opbeat.
      *
      * @return {error}
      */
@@ -302,14 +302,14 @@ var Raven = {
     }
 };
 
-Raven.setUser = Raven.setUserContext; // To be deprecated
+Opbeat.setUser = Opbeat.setUserContext; // To be deprecated
 
 function triggerEvent(eventType, options) {
     var event, key;
 
     options = options || {};
 
-    eventType = 'raven' + eventType.substr(0,1).toUpperCase() + eventType.substr(1);
+    eventType = 'opbeat' + eventType.substr(0,1).toUpperCase() + eventType.substr(1);
 
     if (document.createEvent) {
         event = document.createEvent('HTMLEvents');
@@ -335,12 +335,12 @@ function triggerEvent(eventType, options) {
     }
 }
 
-function RavenConfigError(message) {
-    this.name = 'RavenConfigError';
+function OpbeatConfigError(message) {
+    this.name = 'OpbeatConfigError';
     this.message = message;
 }
-RavenConfigError.prototype = new Error();
-RavenConfigError.prototype.constructor = RavenConfigError;
+OpbeatConfigError.prototype = new Error();
+OpbeatConfigError.prototype.constructor = OpbeatConfigError;
 
 /**** Private functions ****/
 function isUndefined(what) {
@@ -392,7 +392,7 @@ function each(obj, callback) {
 
 
 function setAuthQueryString() {
-    authQueryString = '?agent=opbeat-js/' + Raven.VERSION;
+    authQueryString = '?agent=opbeat-js/' + Opbeat.VERSION;
 }
 
 
@@ -443,10 +443,10 @@ function normalizeFrame(frame) {
     normalized.in_app = !( // determine if an exception came from outside of our app
         // first we check the global includePaths list.
         !globalOptions.includePaths.test(normalized.filename) ||
-        // Now we check for fun, if the function name is Raven or TraceKit
-        /(Raven|TraceKit)\./.test(normalized['function']) ||
-        // finally, we do a last ditch effort and check for raven.min.js
-        /raven\.(min\.)?js$/.test(normalized.filename)
+        // Now we check for fun, if the function name is Opbeat or TraceKit
+        /(Opbeat|TraceKit)\./.test(normalized['function']) ||
+        // finally, we do a last ditch effort and check for opbeat.min.js
+        /opbeat\.(min\.)?js$/.test(normalized.filename)
     );
 
     return normalized;
@@ -464,7 +464,7 @@ function extractContextFromFrame(frame) {
         // We're making a guess to see if the source is minified or not.
         // To do that, we make the assumption if *any* of the lines passed
         // in are greater than 300 characters long, we bail.
-        // Sentry will see that there isn't a context
+        // Opbeat.com will see that there isn't a context
         if (context[i].length > 300) {
             isMinified = true;
             break;
@@ -498,10 +498,10 @@ function processException(type, message, fileurl, lineno, frames, options) {
     // so we want to always coerce it to one.
     message += '';
 
-    // Sometimes an exception is getting logged in Sentry as
+    // Sometimes an exception is getting logged in Opbeat.com as
     // <no message value>
     // This can only mean that the message was falsey since this value
-    // is hardcoded into Sentry itself.
+    // is hardcoded into Opbeat.com itself.
     // At this point, if the message is falsey, we bail since it's useless
     if (type === 'Error' && !message) return;
 
@@ -509,7 +509,7 @@ function processException(type, message, fileurl, lineno, frames, options) {
 
     if (frames && frames.length) {
         fileurl = frames[0].filename || fileurl;
-        // Sentry expects frames oldest to newest
+        // Opbeat.com expects frames oldest to newest
         // and JS sends them as newest to oldest
         frames.reverse();
         stacktrace = {frames: frames};
@@ -603,7 +603,7 @@ function send(data) {
     }
 
     // Send along an client_supplied_id if not explicitly passed.
-    // This client_supplied_id can be used to reference the error in Opbeat
+    // This client_supplied_id can be used to reference the error on Opbeat.com
     // Set lastEventId after we know the error should actually be sent
     lastEventId = data.client_supplied_id || (data.client_supplied_id = uuid4());
 
@@ -633,7 +633,7 @@ function makeRequest(data) {
 function isSetup() {
     if (!hasJSON) return false;  // needs JSON support
     if (!globalServer) {
-        logDebug('error', 'Error: Raven has not been configured.');
+        logDebug('error', 'Error: Opbeat has not been configured.');
         return false;
     }
     return true;
@@ -671,17 +671,17 @@ function uuid4() {
 }
 
 function logDebug(level, message) {
-    if (window.console && console[level] && Raven.debug) {
+    if (window.console && console[level] && Opbeat.debug) {
         console[level](message);
     }
 }
 
-// Expose Raven to the world
-window.Raven = Raven;
+// Expose Opbeat
+window.Opbeat = Opbeat;
 
 // AMD
 if (typeof define === 'function' && define.amd) {
-    define('raven', [], function() { return Raven; });
+    define('opbeat', [], function() { return Opbeat; });
 }
 
 })(this);
