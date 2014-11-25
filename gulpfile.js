@@ -1,17 +1,8 @@
 var gulp = require('gulp');
-var refresh = require('gulp-livereload');
+var livereload = require('gulp-livereload');
 var serve = require('gulp-serve');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
-var lr = require('tiny-lr');
-var server = lr();
-
-// Livereload server
-gulp.task('lr-server', function() {
-    server.listen(35723, function(err) {
-        if(err) return console.log(err);
-    });
-});
 
 // Static file server
 gulp.task('server', serve({
@@ -22,7 +13,7 @@ gulp.task('server', serve({
 // Task for refreshing everything (HTML, etc)
 gulp.task('refresh-browser', function() {
     gulp.src('package.json', {read: false})
-        .pipe(refresh(server));
+        .pipe(livereload());
 });
 
 // Files to bundle
@@ -39,15 +30,17 @@ gulp.task('process-scripts', function() {
         .pipe(uglify().on('error', function(e) { console.log('\x07',e.message); return this.end(); }))
         .pipe(concat('opbeat.min.js'))
         .pipe(gulp.dest('./dist'))
-        .pipe(refresh(server));
+        .pipe(livereload());
 });
 
 // Development mode
 gulp.task('watch', [], function(cb){
 
+    // Livereload
+    livereload.listen();
+
     gulp.run(
         'process-scripts',
-        'lr-server',
         'server'
     );
 
