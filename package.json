@@ -1,7 +1,7 @@
 {
   "name": "opbeat-js",
   "version": "0.0.1",
-  "description": "Client side error logging agent for Opbeat.",
+  "description": "An experimental JS client for logging exceptions and stacktraces to Opbeat",
   "author": "Vanja Cosic, Matt Robenolt and other contributors",
   "license": "BSD-2-Clause",
   "homepage": "https://github.com/vanjacosic/opbeat-js",
