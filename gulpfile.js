@@ -49,4 +49,20 @@ gulp.task('watch', [], function(cb){
 
     // Watch example files
     gulp.watch('example/**', ['refresh-browser']);
+
+    console.log('\nExample site running on http://localhost:7000/\n');
+});
+
+
+//
+// Default task
+//
+gulp.task('default', function(){
+    var response = ['',
+        'No task selected.',
+        'Available tasks:', '',
+        'gulp watch       - Watch files and preview example site on localhost.', ''
+    ].join('\n');
+
+    console.log(response);
 });
