@@ -1132,7 +1132,6 @@ var _Opbeat = window.Opbeat,
         collectWindowErrors: true,
         extra: {}
     },
-    authQueryString,
     isOpbeatInstalled = false;
 
 /*
@@ -1206,8 +1205,6 @@ var Opbeat = {
         }
 
         TraceKit.collectWindowErrors = !!globalOptions.collectWindowErrors;
-
-        setAuthQueryString();
 
         // return for chaining
         return Opbeat;
@@ -1503,11 +1500,6 @@ function each(obj, callback) {
 }
 
 
-function setAuthQueryString() {
-    authQueryString = '?agent=opbeat-js/' + Opbeat.VERSION;
-}
-
-
 function handleStackInfo(stackInfo, options) {
     var frames = [];
 
@@ -1690,6 +1682,7 @@ function send(data) {
     if (!isSetup()) return;
 
     data = objectMerge({
+        client_version: 'opbeat-js/' + Opbeat.VERSION,
         logger: globalOptions.logger,
         http: getHttpData()
     }, data);
@@ -1725,7 +1718,7 @@ function send(data) {
 
 function makeRequest(data) {
     var img = new Image();
-    var src = globalServer + authQueryString + '&data=' + encodeURIComponent(JSON.stringify(data));
+    var src = globalServer + '?data=' + encodeURIComponent(JSON.stringify(data));
 
     img.onload = function success() {
         triggerEvent('success', {
