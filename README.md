@@ -7,12 +7,13 @@ For Node.js applications, please see the [opbeat-node](https://github.com/opbeat
 
 ## Usage
 
-Check out the example application:
+Check out `/example` for an example of usage.
 
-1. Run `npm install gulp -g` to install `gulp`
-1. Run `npm install` to install dependencies
-1. Change the credentials to match your Opbeat app in `example.js`
-1. Run `gulp watch` to start the preview server on `localhost:7000`
+1. Edit the credentials in `example.js` to match your Opbeat organization and app.
+1. Open `index.html`
+1. Click a button to trigger an exception and log it to Opbeat
+
+**NOTE:** To be able to log clientside errors to Opbeat, your organization needs to have the feature flag enabled. Send Opbeat a message and they will enable it for you.
 
 ## Documentation
 
@@ -23,6 +24,15 @@ Basic documentation will be written once the library has been tested and is in a
 ## Contributing
 
 Feel free to help out with testing and developing this thing. Issues and Pull Requests are very welcome!
+
+## Development usage
+
+1. Run `npm install gulp -g` to install `gulp`
+1. Run `npm install` to install dependencies
+1. Change the credentials to match your Opbeat app in `example.js`
+1. Run `gulp watch` to start the preview server on `localhost:7000`
+
+This process watches and compiles dist versions of the client. It also livereloads the assets for the example application for a better development/testing workflow.
 
 ## License & origin
 
