@@ -1,15 +1,12 @@
-console.log('Example site loaded.');
-
 // Configure client
 Opbeat.config({
-    api_host: 'http://0.0.0.0:9000',
-    orgId: '21c3358438094c01acbb38554436497a',
-    appId: '53d206094c'
+    orgId: '21e3157338024d01bcd23d554436497c',
+    appId: 's2c204094d'
 }).install();
 
-// Set user data
+// Set optional user data
 Opbeat.setUserContext({
-    email: 'vanja@cosic.dk',
+    email: 'vanja@opbeat.com',
     id: 1
 })
 
