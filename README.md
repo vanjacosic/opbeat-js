@@ -5,7 +5,16 @@ your client-side (browser) JavaScript applications.
 
 For Node.js applications, please see the [opbeat-node](https://github.com/opbeat/opbeat-node) client instead.
 
-## Getting started & documentation
+## Usage
+
+Check out the example application:
+
+1. Run `npm install gulp -g` to install `gulp`
+1. Run `npm install` to install dependencies
+1. Change the credentials to match your Opbeat app in `example.js`
+1. Run `gulp watch` to start the preview server on `localhost:7000`
+
+## Documentation
 
 Please refer to the [sourcecode](https://github.com/vanjacosic/opbeat-js/blob/master/src/opbeat.js) or the [raven-js documentation](https://raven-js.readthedocs.org/en/latest/) for now. 
 
