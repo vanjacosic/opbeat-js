@@ -13,6 +13,7 @@ var _Opbeat = window.Opbeat,
     globalOptions = {
         api_host: 'https://opbeat.com',
         logger: 'javascript',
+        collectHttp: true,
         ignoreErrors: [],
         ignoreUrls: [],
         whitelistUrls: [],
@@ -552,6 +553,11 @@ function truncate(str, max) {
 }
 
 function getHttpData() {
+
+    if (!globalOptions.collectHttp) {
+        return null;
+    }
+    
     var http = {
         url: document.location.href,
         headers: {
