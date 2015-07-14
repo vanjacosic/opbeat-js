@@ -5,7 +5,7 @@
   "author": "Vanja Cosic, Matt Robenolt and other contributors",
   "license": "BSD-2-Clause",
   "homepage": "https://github.com/vanjacosic/opbeat-js",
-  "main": "gulpfile.js",
+  "main": "dist/opbeat.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
