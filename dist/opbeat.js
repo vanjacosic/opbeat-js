@@ -1629,7 +1629,8 @@ function processException(type, message, fileurl, lineno, frames, options) {
     }
 
     // Truncate the message to a max of characters
-    message = truncate(message, 100);
+    // Limit should be kept low to avoid hitting the browser URL length limit
+    message = truncate(message, 500);
 
     if (globalOptions.ignoreUrls && globalOptions.ignoreUrls.test(fileurl)) return;
     if (globalOptions.whitelistUrls && !globalOptions.whitelistUrls.test(fileurl)) return;
