@@ -1131,9 +1131,12 @@ var _Opbeat = window.Opbeat,
         whitelistUrls: [],
         includePaths: [],
         collectWindowErrors: true,
-        extra: {}
+        extra: {
+            frame_info: {}
+        }
     },
-    isOpbeatInstalled = false;
+    isOpbeatInstalled = false,
+    frameInfoCounter = 1;
 
 /*
  * The core Opbeat singleton
@@ -1531,6 +1534,16 @@ function handleStackInfo(stackInfo, options) {
 function normalizeFrame(frame) {
     if (!frame.url) return;
 
+    // Construct a frame message to be added to the Extra tab because
+    // Opbeat.com interface currently doesn't show column number in stacktrace
+    var frameMessage = 'File: ' + (frame.url || '?') +
+                        ', Line: ' + (frame.line || '?') +
+                        ', Column: ' + (frame.column || '?') +
+                        ', Func: ' + (frame.func || '?') ;
+
+    // Add frame message to Extra payload
+    globalOptions.extra.frame_info['frame_' + frameInfoCounter++] = frameMessage;
+
     // normalize the frames data
     var normalized = {
         filename:   frame.url,
@@ -1719,6 +1732,10 @@ function send(data) {
     lastEventId = data.client_supplied_id || (data.client_supplied_id = uuid4());
 
     makeRequest(data);
+
+    // Clear extra frame info after each send
+    globalOptions.extra.frame_info = {};
+    frameInfoCounter = 1;
 }
 
 
