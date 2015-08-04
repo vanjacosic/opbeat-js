@@ -1,6 +1,6 @@
 {
   "name": "opbeat-js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An experimental JS client for logging exceptions and stacktraces to Opbeat",
   "author": "Vanja Cosic, Matt Robenolt and other contributors",
   "license": "BSD-2-Clause",
