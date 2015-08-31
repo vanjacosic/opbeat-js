@@ -280,7 +280,7 @@ var Opbeat = {
      */
     setExtraContext: function(extra) {
        globalOptions.extra = extra || {};
-
+	
        return Opbeat;
     },
 
@@ -430,6 +430,7 @@ function normalizeFrame(frame) {
                         ', Func: ' + (frame.func || '?') ;
 
     // Add frame message to Extra payload
+    globalOptions.extra.frame_info = globalOptions.extra.frame_info || {};
     globalOptions.extra.frame_info['frame_' + frameInfoCounter++] = frameMessage;
 
     // normalize the frames data
